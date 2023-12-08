@@ -1,0 +1,233 @@
+---
+title: "lab06"
+author: "Ebony Michelle Argaez (PID: A96056556)"
+format: pdf
+editor: visual
+---
+
+Grades of sample students
+
+```{r}
+#example input vectors to start with
+student1 <- c(100, 100, 100, 100, 100, 100, 100, 90)
+student2 <- c(100, NA, 90, 90, 90, 90, 97, 80)
+student3 <- c(90, NA, NA, NA, NA, NA, NA, NA)
+```
+
+> Q1: Write a function grade() to determine an overall grade from a vector of student homework
+assignment scores dropping the lowest single score. If a student misses a homework (i.e. has an
+NA value) this can be used as a score to be potentially dropped. Your final function should be
+adquately explained with code comments and be able to work on an example class gradebook
+such as this one in CSV format: “https://tinyurl.com/gradeinput”
+
+```{r}
+student1
+```
+
+Determining Average using 'mean()'.
+```{r}
+mean(student1)
+```
+
+Determining minimum score of student 1 
+```{r}
+#to determine the minimum value
+min(student1)
+```
+
+to determine position of minimum value
+```{r}
+which.min(student1)
+```
+
+getting the value of 8th position
+```{r}
+student1[8]
+```
+
+getting minimum value
+```{r}
+student1[which.min(student1)]
+```
+
+to remove a specific position, in this case position 8, the min val
+```{r}
+student1[-8]
+```
+
+to get everything but min value
+```{r}
+student1[-which.min(student1)]
+```
+
+now taking the mean of student 1
+```{r}
+#first sln
+mean(student1[-which.min(student1)])
+```
+
+Now doing this for student2 & student 3
+
+```{r}
+student2
+
+#student 2 has NA value
+```
+
+```{r}
+#this would work for student 2 but not student 3
+mean(student2, na.rm=TRUE)
+```
+
+```{r}
+mean(student3, na.rm=TRUE)
+#this student only submitted 1 assignment
+```
+
+Need to convert all NA's to 0, using 'na.rm=True' is unfair. 
+
+```{r}
+#converting NA of student 2
+student2= replace(student2, is.na(student2), 0)
+student2
+```
+
+```{r}
+#converting NA of student 2
+student3
+s2=student2
+s2[is.na(s2)] = 0 
+s2
+
+#finding mean of student 2
+mean(s2[-which.min(s2)])
+```
+
+
+```{r}
+#converting NA of student 3
+student3
+s3=student3
+s3[is.na(s3)] = 0 
+s3
+
+mean(s3[-which.min(s3)])
+```
+
+
+Create function to determine mean and removing lowest score
+
+```{r}
+#' Calculate average score for vector of HW scores
+#' dropping the lowest score
+#' Missing values (NA) will be treated as zero
+#' @param numeric vector of hw scores
+#'
+#' @return average score
+#' @export
+#'
+#' @examples
+#'  student <- c(100, NA, 90, 80)
+#'  grade(student)
+grade <- function(x) {
+  x[is.na(x)] = 0 #converts NA/missing hw to 0
+  mean(x[-which.min(x)]) #determines lowest value and excludes it
+}
+```
+
+Cheking if grade function works with example students
+```{r}
+grade(student1)
+grade(student2)
+grade(student3)
+
+#it works ^_^
+```
+
+
+Apply function to example class gradebook:
+
+```{r}
+url <- "https://tinyurl.com/gradeinput"
+gradebook <- read.csv(url, row.names=1) #starts with hw column not student ID column
+
+#View(gradebook)
+```
+
+```{r}
+results <- apply(gradebook, MARGIN=1, grade)
+results
+```
+
+
+>Q2: Using your grade() function and the supplied gradebook, Who is the top scoring student overall in the gradebook?
+
+```{r}
+#gives me student with highest score
+which.max(results)
+```
+
+> Q3: From your analysis of the gradebook, which homework was toughest on students (i.e. obtained the lowest scores overall?
+
+Calculate summary stat for each HW or column
+```{r}
+#determining average of each hw
+
+avg_hw <- apply(gradebook, 2, mean, na.rm=TRUE)
+avg_hw
+
+#determining hw with lowest mean
+which.min(avg_hw)
+```
+
+```{r}
+#determining median of each hw
+
+median_hw <- apply(gradebook, 2, median, na.rm=TRUE)
+median_hw
+
+#determining hw with lowest median
+which.min(median_hw)
+```
+When determining mean and median, you get different results. 
+
+Plotting data to see differences. 
+
+```{r}
+boxplot(gradebook)
+```
+
+Based on the plot, hw 1 and 4 most people scored high based on the mean; students ranged in scores for hw 2, hw 3 the average score was low; and hw 5 there was a 
+
+>Q4: From your analysis of the gradebook, which homework was most
+predictive of overall score (i.e. highest correlation with average grade score)?
+
+```{r}
+cor(results, gradebook$hw1)
+cor(results, gradebook$hw2)
+cor(results, gradebook$hw3)
+cor(results, gradebook$hw4)
+cor(results, gradebook$hw5)
+```
+I get NAs. 
+
+```{r}
+#changing NAs 
+gradebook[is.na(gradebook)] <-0
+
+#checking to see if this works for all hw's
+cor(results, gradebook$hw1)
+cor(results, gradebook$hw2)
+cor(results, gradebook$hw3)
+cor(results, gradebook$hw4)
+cor(results, gradebook$hw5)
+```
+
+```{r}
+#using apply to check cor of all hw's
+apply(gradebook, 2, cor, x=results)
+```
+
+HW 2 has a poor correlation. 
+
+

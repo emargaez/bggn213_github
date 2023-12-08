@@ -1,0 +1,120 @@
+---
+title: "lab04"
+output: html_document
+date: "2023-10-13"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+source("http://thegrantlab.org/misc/cdc.R")
+
+View(cdc)
+
+
+head(cdc$height)
+
+tail(cdc$weight,20)
+
+```
+
+```{r}
+#create scatterplot
+plot(cdc$height, cdc$weight)
+```
+
+
+```{r}
+#creating scatterplot w/ ggplot
+library(ggplot2)
+
+ggplot(cdc, aes(x=height, y=weight)) + 
+    geom_point()
+```
+
+
+```{r}
+cor(cdc$height, cdc$weight)
+```
+
+```{r}
+#making histograms
+hist(cdc$weight)
+
+hist(cdc$height)
+```
+
+```{r}
+#converting height
+height_m <- cdc$height * 0.0254
+
+#converting weight
+weight_kg = cdc$weight * 0.454
+```
+
+
+```{r}
+#calculating BMI
+bmi= (weight_kg)/(height_m^2)
+```
+
+
+```{r}
+#plotting height vs BMI
+plot(cdc$height, bmi)
+```
+
+
+```{r}
+ggplot(cdc, aes(x=height, y=bmi)) + 
+    geom_point()
+
+```
+
+```{r}
+cor(cdc$height, bmi)
+```
+
+
+```{r}
+head(bmi >= 30, 100)
+```
+
+
+```{r}
+eg <- c(TRUE, TRUE, FALSE, FALSE)
+sum(eg)
+```
+
+```{r}
+sum(bmi >= 30)
+
+#proportion of obese individuals
+sum(bmi >= 30)/length(bmi)
+
+#percent value
+(sum(bmi >= 30)/length(bmi)) * 100
+
+#round % value to one significant figure
+round( (sum(bmi >= 30)/length(bmi)) * 100, 1)
+```
+
+```{r}
+cdc[567, 6]
+```
+
+```{r}
+cdc[1:10, 6]
+```
+
+```{r}
+cdc[1:10, ]
+```
+
+```{r}
+plot(cdc[1:100,]$height, cdc[1:100,]$weight)
+```
+
