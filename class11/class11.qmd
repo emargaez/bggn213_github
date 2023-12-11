@@ -1,0 +1,115 @@
+---
+title: "class11: AlphaFold2 analysis"
+author: "Ebony Michelle Argaez (PID: )"
+format: pdf
+---
+
+
+Post process and inspecting modeling results from AlphaFold2
+
+Results from AF Live in the folder/directory 'hivprdimer_23119'
+
+```{r}
+library(bio3d)
+
+results_dir <- 'hivprdimer_23119_1/'
+
+pdb_files <- list.files(results_dir, pattern = ".pdb", full.names=T)
+```
+
+
+Align and supperpose PDB models by using 'pdbaln()' 
+
+```{r}
+pdbs <- pdbaln(pdb_files, fit=T, exefile="msa")
+```
+
+## RMSD Matrix
+
+A common measure of structural dis-similarity is called RMSD (root mean square distance)
+
+```{r}
+rd <- rmsd(pdbs)
+rd
+```
+
+```{r}
+library(pheatmap)
+
+rownames(rd) <- paste0("m", 1:5)
+colnames(rd) <- paste0("m", 1:5)
+
+
+pheatmap(rd)
+```
+
+viewing them in Mol*, need to get fitted coords
+
+```{r}
+xyz <- pdbfit(pdbs, outpath="fitted")
+```
+
+
+A full atom based fitting or supperposition did not work very well because we have a multiple chains that are in different conformations.
+
+Want to focus our supperposition on the most invarient part (the rigid "core" if you will)
+
+```{r}
+core <- core.find(pdbs)
+core.inds <- core
+
+```
+
+```{r}
+xyz <- pdbfit(pdbs, inds=core.inds, outpath="core_fitted")
+```
+
+
+to evaluate how good multi-chain or multi-domain models are we need to look at PAE scores (predicted aligned error) 
+
+there are output as JSON format files. 
+
+```{r}
+pae_files <- list.files(results_dir, pattern = "0.json", full.names = T)
+pae_files
+```
+
+```{r}
+library(jsonlite)
+
+pae1 <- read_json(pae_files[1], simplifyVector = T)
+pae5 <- read_json(pae_files[5], simplifyVector = T)
+```
+
+```{r}
+attributes(pae1)
+```
+
+```{r}
+pae1$max_pae
+pae5$max_pae
+```
+
+```{r}
+plot.dmat(pae5$pae,
+          xlab="Residue No.",
+          ylab="Residue No.", 
+          zlim=c(0,30)
+          )
+
+```
+
+
+```{r}
+plot.dmat(pae1$pae,
+          xlab="Residue No.",
+          ylab="Residue No.", 
+          zlim=c(0,30)
+          )
+```
+
+## Main points
+
+-run AlphaFold on google compute infastructure ^_^
+-read these results into R and process to help us make sense of these models and their PAE and pLDDT scores. 
+

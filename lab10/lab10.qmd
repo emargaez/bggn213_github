@@ -1,0 +1,148 @@
+---
+title: "lab10: Structural Bioinformatics"
+author: "Ebony Michelle Argaez (PID: A59026556"
+format: pdf
+editor: visual
+---
+
+Uniprot has 251600,768 proteins
+```{r}
+round(183201/251600768*100, 2)
+```
+
+
+```{r}
+string <-c("10", "100", 1, "1,000")
+as.numeric(string) + 1
+
+string<- gsub(",","", string)
+
+##my function
+remove_commas <- function(df) {
+  df[] <-lapply(df, function(x) gsub(",", "", x))
+  return(df)
+}
+
+remove_commas(string)
+
+#Barry's function
+rm_comma <-function(x){
+ as.numeric(gsub(",", "", x))
+}
+
+```
+
+## 1:Introduction to the RCSB Protein Data Bank (PDB)
+
+PDB statistics
+
+```{r}
+stats<-(read.csv("Data Export Summary.csv", row.names = 1))
+
+pdbstats<-apply(stats, 2, rm_comma)
+```
+
+```{r}
+rownames(pdbstats) <-rownames(stats)
+pdbstats
+```
+
+
+
+>Q1: What percentage of structures in the PDB are solved by X-Ray and Electron Microscopy.
+
+93.16%
+
+```{r}
+totals<-apply(pdbstats, 2, sum)
+
+round(totals/totals["Total"]*100,2)
+
+84.83+8.33
+```
+
+Skipping Q2-3
+>Q2: What proportion of structures in the PDB are protein?
+
+
+>Q3: Type HIV in the PDB website search box on the home page and determine how many HIV-1 protease structures are in the current PDB?
+
+
+## 2. Visualizing the HIV-1 protease structure
+
+![](1HSG.png)
+
+>Q4: Water molecules normally have 3 atoms. Why do we see just one atom per water molecule in this structure?
+
+The resolution is too low. It's 2Å. 
+
+>Q5: There is a critical “conserved” water molecule in the binding site. Can you identify this water molecule? What residue number does this water molecule have
+
+308
+
+
+>Q6: Generate and save a figure clearly showing the two distinct chains of HIV-protease along with the ligand. You might also consider showing the catalytic residues ASP 25 in each chain and the critical water (we recommend “Ball & Stick” for these side-chains). Add this figure to your Quarto document.
+
+adding a nicer picture, colored by secondary structure with catalytic site ASP 25 shown in each chain along with MK1 drug. 
+
+![Lovely image](1HSG_updated.png)
+
+## Using the bio3d Package
+
+```{r}
+library(bio3d)
+
+pdb <- read.pdb("1hsg")
+pdb
+```
+
+>Q7: How many amino acid residues are there in this pdb object? 
+
+198
+
+>Q8: Name one of the two non-protein residues? 
+
+HOH(127), MK(1)
+
+>Q9: How many protein chains are in this structure? 
+
+2
+
+```{r}
+attributes(pdb)
+```
+
+```{r}
+head(pdb$atom)
+```
+
+```{r}
+head(pdb$atom$resid)
+```
+
+```{r}
+aa321(pdb$atom$resid[pdb$calpha])
+```
+
+## Predicting functional motions of a single structure
+
+Run a Normal Mode analysis (NMA) - a bioinformatics method to predict functional motions
+
+```{r}
+adk <- read.pdb("6s36")
+modes<-nma(adk)
+plot(modes)
+```
+
+```{r}
+mktrj(modes, pdb=adk, file="modes.pdb")
+```
+
+
+
+
+
+
+
+
+

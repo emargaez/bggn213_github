@@ -1,0 +1,85 @@
+    1  uptime
+    2  curl -O https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
+    3  ls
+    4  gzip -d sratoolkit.current-ubuntu64.tar.gz 
+    5  ls
+    6  tar -xvf sratoolkit.current-ubuntu64.tar 
+    7  ls
+    8  clear
+    9  ls
+   10  ls sratoolkit.3.0.7-ubuntu64/
+   11  ls sratoolkit.3.0.7-ubuntu64/bin
+   12  sratoolkit.3.0.7-ubuntu64/bin/prefetch
+   13  echo $PATH
+   14  ls /usr/bin
+   15  clear
+   16  export PATH=$PATH:/home/ubuntu/sratoolkit.3.0.7-ubuntu64/bin/
+   17  prefetch
+   18  prefetch SRR600956
+   19  ls
+   20  ls SRR600956/
+   21  fastq-dump SRR600956/
+   22  ls
+   23  head SRR600956
+   24  head SRR600956.fastq 
+   25  grep -c "@" SRR600956.fastq 
+   26  grep -c "@SRR6" SRR600956.fastq 
+   27  tail SRR600956.fastq 
+   28  prefetch SRR2156848
+   29  fastq-dump SRR2156848
+   30  head SRR2156848.fastq 
+   31  ls
+   32  fastq-dump --split-3 SRR2156848
+   33  ls
+   34  head SRR2156848_1.fastq 
+   35  grep -c "@SRR215" SRR2156848_1.fastq 
+   36  tail SRR2156848_1.fastq 
+   37  prefetch SRR2156849 SRR2156850 SRR2156851
+   38  fastq-dump --split-3 SRR2156849 SRR2156850 SRR2156851
+   39  ls
+   40  ls *.fastq
+   41  clear
+   42  wget https://github.com/pachterlab/kallisto/releases/download/v0.44.0/kallisto_linux-v0.44.0.tar.gz
+   43  gzip -d kallisto_linux-v0.44.0.tar.gz 
+   44  tar -xvf kallisto_linux-v0.44.0.tar 
+   45  ls
+   46  kallisto_linux-v0.44.0/
+   47  kallisto_linux-v0.44.0/kallisto 
+   48  pwd
+   49  cd kallisto_linux-v0.44.0/
+   50  pwd
+   51  export PATH=$PATH:/home/ubuntu/kallisto_linux-v0.44.0
+   52  kallisto 
+   53  wget ftp://ftp.ensembl.org/pub/release-67/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh37.67.cdna.all.fa.gz
+   54  gunzip Homo_sapiens.GRCh37.67.cdna.all.fa.gz
+   55  ls
+   56  kallisto index -i hg19.ensembl Homo_sapiens.GRCh37.67.cdna.all.fa
+   57  ls
+   58  pwd
+   59  mv Homo_sapiens.GRCh37.67.cdna.all.fa ~/.
+   60  ls
+   61  cd ../
+   62  ls
+   63  head Homo_sapiens.GRCh37.67.cdna.all.fa 
+   64  kallisto index -i hg19.ensembl Homo_sapiens.GRCh37.67.cdna.all.fa
+   65  kallisto quant -i hg19.ensembl -o SRR2156848_quant SRR2156848_1.fastq SRR2156848_2.fastq
+   66  ls
+   67  ls SRR2156848_quant/
+   68  head SRR2156848_quant/
+   69  head SRR2156848_quant/abundance.tsv
+   70  ls
+   71  nano run.sh
+   72  head run.sh
+   73  sh run.sh
+   74  top
+   75  ls
+   76  ls *_quant
+   77  pwd
+   78  ls
+   79  echo aws
+   80  echo $aws
+   81  nano my_instance.txt
+   82  source my_instance.txt 
+   83  echo $aws
+   84  history
+   85  history > my_cmd_log.txt

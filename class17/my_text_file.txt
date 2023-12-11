@@ -1,0 +1,7 @@
+This is just a basic text editor......T_T 
+
+
+ubuntu@ec2-35-91-88-153.us-west-2.compute.amazonaws.com
+
+ssh -i "bggn213_ebony.pem" ubuntu@ec2-35-91-88-153.us-west-2.compute.amazonaws.com
+

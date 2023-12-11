@@ -1,0 +1,5 @@
+#my AWS instance
+
+export aws='ubuntu@ec2-35-87-64-86.us-west-2.compute.amazonaws.com'
+echo $aws
+
